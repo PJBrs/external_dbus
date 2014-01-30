@@ -723,6 +723,13 @@ _dbus_keyring_new_homedir (const DBusString *username,
   DBusError tmp_error;
 
   _DBUS_ASSERT_ERROR_IS_CLEAR (error);
+
+  if (_dbus_check_setuid ())
+    {
+      dbus_set_error_const (error, DBUS_ERROR_NOT_SUPPORTED,
+                            "Unable to create DBus keyring when setuid");
+      return NULL;
+    }
   
   keyring = NULL;
   error_set = FALSE;
